@@ -9,8 +9,6 @@ import runtimedata
 import connman
 
 import bytebreach_data
-import bytebreach_client
-import bytebreach_server
 
 colors = data.Colors()
 debug = print
@@ -28,13 +26,17 @@ def connectionMainServer():
         status = socket.connect("gcg.ivma.hr", data.serverPort, 5)
 
         if status:
-            runtimedata.connectedServer = "Main Server"
+            runtimedata.connectedServer = "Main Server" + colors.escapeSequence + colors.typeBold + colors.colorRed + colors.backDefault + colors.finish + "NOT IMPLEMENTED" + colors.fullReset
             break
+
+    if status == False:
+        print(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server")
+        exit()
 
 def connection():
     global socket
 
-    os.system("cls")
+    if not runtimedata.noCls: os.system("cls")
 
     data.printStatusBar()
 
@@ -61,6 +63,18 @@ def connection():
             socket.createServer(data.serverPort)
 
             runtimedata.connectedServer = Isocket.gethostbyname(Isocket.gethostname())
+            runtimedata.runningServer = True
+            runtimedata.serverSocket = socket
+
+            socket = connman.Socket(client=True)
+            while True:
+                status = socket.connect("localhost", data.serverPort, 5)
+                
+                if not status:
+                    print(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server")
+                else:
+                    runtimedata.clientSocket = socket
+                    break
 
         else:
             socket = connman.Socket(client=True)
@@ -70,19 +84,23 @@ def connection():
                 status = socket.connect(ip, data.serverPort, 5)
                 
                 if not status:
-                    print(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server ", "")
+                    print(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server", "")
                 else:
                     runtimedata.connectedServer = ip
-                    runtimedata.runningServer = True
+                    runtimedata.clientSocket = socket
                     break
 
 def main():
-    os.system("cls")
+    if not runtimedata.noCls: os.system("cls")
 
     runtimedata.game = "ByteBreach"
 
     data.printStatusBar()
     bytebreach_data.init()
+
+    # First init the import these as they use PyTimedInput
+    import bytebreach_client
+    import bytebreach_server
 
     debug(bytebreach_data.logoMain) # Have to use debug as the logo is already encoded with colors
     debug()
@@ -91,15 +109,13 @@ def main():
     readkeys.getch()
 
     for idx in range(8):
-        os.system("cls")
+        if not runtimedata.noCls: os.system("cls")
         data.printStatusBar()
         bytebreach_data.graduallyRemoveText(bytebreach_data.logoMain, idx)
         time.sleep(0.25)
 
     # Begin game
     connection()
-
-    runtimedata.socket = socket
 
     threadClient = threading.Thread(target=bytebreach_client.main)
     threadServer = threading.Thread(target=bytebreach_server.main)

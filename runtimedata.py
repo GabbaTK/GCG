@@ -1,5 +1,7 @@
 localGame = True
 connectedServer = ""
 game = ""
-socket = None
+clientSocket = None
+serverSocket = None
 runningServer = False
+noCls = False

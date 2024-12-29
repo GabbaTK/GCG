@@ -10,7 +10,7 @@ print = data.betterPrint
 
 def main():
     while True:
-        os.system("cls")
+        if not runtimedata.noCls: os.system("cls")
 
         print(colors.typeBold, colors.colorWhite, colors.backDefault, data.logo)
 

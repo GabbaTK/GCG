@@ -1,6 +1,7 @@
 import data
 import os
 import readkeys
+import sys
 
 import runtimedata
 import localgameconfig
@@ -11,6 +12,8 @@ import bytebreach_main
 colors = data.Colors()
 debug = print
 print = data.betterPrint
+
+args = sys.argv
 
 games = ["Battle ship", "ByteBreach"]
 
@@ -30,6 +33,8 @@ def printMain():
         print(colors.typeNormal, colors.colorWhite, colors.backDefault, game)
 
 def main():
+    if "-ncls" in args: runtimedata.noCls = True
+
     printMain()
 
     while runtimedata.game == "":
@@ -38,18 +43,18 @@ def main():
         if key == "0":
             localgameconfig.main()
 
-            os.system("cls")
+            if not runtimedata.noCls: os.system("cls")
             printMain()
 
         elif key == "1": battleship_main.main()
         elif key == "2": bytebreach_main.main()
 
 if __name__ == "__main__":
-    os.system("cls")
+    if not runtimedata.noCls: os.system("cls")
 
     main()
 else:
-    os.system("cls")
+    if not runtimedata.noCls: os.system("cls")
 
     print(colors.typeItalic, colors.colorDefault, colors.backDefault, "Why are you running this as an import?")
     print(colors.typeItalic, colors.colorDefault, colors.backDefault, "Anyways, here is the game manager.\n")
