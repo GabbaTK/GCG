@@ -61,12 +61,12 @@ def game(first):
                 startCoord = [ord(startCoord[0]) - 65, int(startCoord[1]) - 1]
                 endCoord = [ord(endCoord[0]) - 65, int(endCoord[1]) - 1]
 
-                for line in range(max(min(startCoord[1], endCoord[1]), 0), min(max(startCoord[1], endCoord[1]), 9)):
-                    for cell in range(max(min(startCoord[0], endCoord[0]), 0), min(max(startCoord[0], endCoord[0]), 9)):
+                for line in range(max(min(startCoord[1], endCoord[1]) - 1, 0), min(max(startCoord[1], endCoord[1]) + 1, 9) + 1):
+                    for cell in range(max(min(startCoord[0], endCoord[0]) - 1, 0), min(max(startCoord[0], endCoord[0]) + 1, 9) + 1):
                         hitShips.append(battleship_data.HitShip([0, cell, line]))
 
-                for line in range(min(startCoord[1], endCoord[1]), max(startCoord[1], endCoord[1])):
-                    for cell in range(min(startCoord[0], endCoord[0]), max(startCoord[0], endCoord[0])):
+                for line in range(min(startCoord[1], endCoord[1]), max(startCoord[1], endCoord[1]) + 1):
+                    for cell in range(min(startCoord[0], endCoord[0]), max(startCoord[0], endCoord[0]) + 1):
                         hitShips.append(battleship_data.HitShip([1, cell, line]))
             else:
                 print(colors.typeNormal, colors.colorRed, colors.backDefault, f"Invalid response from server: {response}")
