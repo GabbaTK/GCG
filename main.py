@@ -1,3 +1,12 @@
+try:
+    import readkeys
+    import requests
+except ImportError:
+    import os
+
+    os.system("pip install requests")
+    os.system("pip install readkeys")
+
 import data
 import os
 import readkeys
