@@ -1,6 +1,7 @@
 import data
 import os
 import readkeys
+import uuid
 
 import runtimedata
 
@@ -33,4 +34,6 @@ def main():
         if key == "0": break
         elif key == "1":
             runtimedata.localGame = not runtimedata.localGame
+            runtimedata.serverPassword = input("Enter a secret password that only the players know >>>")
+            runtimedata.serverPassword += "_" + str(uuid.uuid4())[0:4]
             break

@@ -16,23 +16,6 @@ print = data.betterPrint
 
 socket = None
 
-def connectionMainServer():
-    global socket
-
-    socket = connman.Socket(client=True)
-
-    for retry in range(3):
-        print(colors.typeNormal, colors.colorWhite, colors.backDefault, f"Connecting, attempt {retry}...")
-        status = socket.connect("gcg.ivma.hr", data.serverPort, 5)
-
-        if status:
-            runtimedata.connectedServer = "Main Server" + colors.escapeSequence + colors.typeBold + colors.colorRed + colors.backDefault + colors.finish + "NOT IMPLEMENTED" + colors.fullReset
-            break
-
-    if status == False:
-        print(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server")
-        exit()
-
 def connection():
     global socket
 
@@ -42,7 +25,8 @@ def connection():
 
     debug()
 
-    if not runtimedata.localGame: connectionMainServer()
+    print("FIX ME CONNECTTOMAINSERVER")
+    if not runtimedata.localGame: data.connectToMainServer()
     else:
         print(colors.typeBold, colors.colorWhite, colors.backDefault, "[", "")
         print(colors.typeBold, colors.colorBlue, colors.backDefault, "1", "")

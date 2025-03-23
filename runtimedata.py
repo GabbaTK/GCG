@@ -1,4 +1,5 @@
 localGame = True
+serverPassword = ""
 connectedServer = ""
 game = "" 
 clientSocket = None

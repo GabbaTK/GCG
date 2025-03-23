@@ -1,5 +1,8 @@
+import requests
+
 import runtimedata
 import os
+import connman
 
 class Colors:
     def __init__(self):
@@ -63,3 +66,26 @@ def keyboard_soft_cancel(cancel_text=""):
 
         return wrapper
     return __make_wrapper
+
+def connectToMainServer():
+    socket = connman.Socket(client=True)
+
+    for retry in range(3):
+        betterPrint(colors.typeNormal, colors.colorWhite, colors.backDefault, f"Connecting, attempt {retry}...")
+
+        response = requests.get("http://gabba.ivma.hr/gcg/ip")
+        response.raise_for_status()
+        data = response.json()
+        ipAddr = data.get("ip")
+        #status = socket.connect("gabba.ivma.hr", serverPort, 5)
+        status = socket.connect(ipAddr, serverPort, 5)
+
+        if status:
+            runtimedata.connectedServer = f"Main Server ({runtimedata.serverPassword})"# + colors.escapeSequence + colors.typeBold + colors.colorRed + colors.backDefault + colors.finish + "NOT IMPLEMENTED" + colors.fullReset
+            break
+
+    if status == False:
+        betterPrint(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server")
+        exit()
+
+    return socket
