@@ -1,6 +1,7 @@
 import os
 import time
 import random
+import socket as ISocket
 
 import connman
 import runtimedata
@@ -172,7 +173,7 @@ def main():
 
     data.printStatusBar()
     debug()
-    print(colors.typeNormal, colors.colorWhite, colors.backDefault, "Waiting for client connection...")
+    print(colors.typeNormal, colors.colorWhite, colors.backDefault, f"Waiting for client connection on {ISocket.gethostbyname(ISocket.gethostname())}...")
 
     socket.createServer(data.serverPort)
     connection, addr = socket.acceptConnection()
