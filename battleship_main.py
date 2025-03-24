@@ -1,13 +1,13 @@
 # a1a4
-# b1b3
 # c1c3
-# d1d2
-# e1e2
-# f1f2
-# g1g1
-# h1h1
-# i1i1
-# j1j1
+# e1e3
+# g1g2
+# i1i2
+# a6a7
+# c5c5
+# e5e5
+# g5g5
+# i5i5
 
 import readkeys
 import os

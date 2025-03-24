@@ -27,13 +27,21 @@ def main():
         print(colors.typeBold, colors.colorWhite, colors.backDefault, "[", "")
         print(colors.typeBold, colors.colorBlue, colors.backDefault, "1", "")
         print(colors.typeBold, colors.colorWhite, colors.backDefault, "] ", "")
-        print(colors.typeNormal, colors.colorWhite, colors.backDefault, "Change")
+        print(colors.typeNormal, colors.colorWhite, colors.backDefault, "Create server")
+        print(colors.typeBold, colors.colorWhite, colors.backDefault, "[", "")
+        print(colors.typeBold, colors.colorBlue, colors.backDefault, "2", "")
+        print(colors.typeBold, colors.colorWhite, colors.backDefault, "] ", "")
+        print(colors.typeNormal, colors.colorWhite, colors.backDefault, "Join server")
 
         key = readkeys.getch()
 
         if key == "0": break
         elif key == "1":
-            runtimedata.localGame = not runtimedata.localGame
+            runtimedata.localGame = False
             runtimedata.serverPassword = input("Enter a secret password that only the players know >>>")
             runtimedata.serverPassword += "_" + str(uuid.uuid4())[0:4]
+            break
+        elif key == "2":
+            runtimedata.localGame = False
+            runtimedata.serverPassword = input("Enter the secret password that was supplied by the server (should look like 'yourpassword_abcd' where abcd is randomly generated) >>>")
             break

@@ -1,12 +1,17 @@
-import data
+import data as gcgData
 import re
 import os
 
 import runtimedata
 
-colors = data.Colors()
+colors = gcgData.Colors()
 debug = print
-print = data.betterPrint
+print = gcgData.betterPrint
+laterPrintText = ""
+
+def laterPrint(type, color, back, text):
+    global laterPrintText
+    laterPrintText = colors.escapeSequence + type + color + back + colors.finish + text + colors.fullReset
 
 class Ship:
     def __init__(self, positions):
@@ -15,6 +20,9 @@ class Ship:
     def hit(self, position):
         if [1, position[0], position[1]] in self.positions:
             self.positions[self.positions.index([1, position[0], position[1]])][0] = 0
+            return True
+        
+        if [0, position[0], position[1]] in self.positions:
             return True
         
         return False
@@ -39,12 +47,21 @@ class HitShip:
     
     def draw(self, board):
         if self.position[0] == 1:
-            board[self.position[2]][self.position[1]] = colors.escapeSequence + colors.typeNormal + colors.colorRed + colors.backDefault + colors.finish + "X" + colors.fullReset # Alive
+            board[self.position[2]][self.position[1]] = colors.escapeSequence + colors.typeNormal + colors.colorRed + colors.backDefault + colors.finish + "X" + colors.fullReset # Hit
         else:
-            board[self.position[2]][self.position[1]] = colors.escapeSequence + colors.typeNormal + colors.colorYellow + colors.backDefault + colors.finish + "X" + colors.fullReset # Dead
+            board[self.position[2]][self.position[1]] = colors.escapeSequence + colors.typeNormal + colors.colorYellow + colors.backDefault + colors.finish + "X" + colors.fullReset # Miss
+
+    def drawLast(self, board):
+        if self.position[0] == 1:
+            board[self.position[2]][self.position[1]] = colors.escapeSequence + colors.typeNormal + colors.colorPink + colors.backDefault + colors.finish + "X" + colors.fullReset # Hit
+        else:
+            board[self.position[2]][self.position[1]] = colors.escapeSequence + colors.typeNormal + colors.colorYellow + colors.backDefault + colors.finish + "X" + colors.fullReset # Miss
 
     def hit(self, _):
         return False
+    
+    def sunk(self):
+        return True
 
 def funcCall(func):
     return func()
@@ -63,16 +80,41 @@ def drawBoard(ships):
 
     debug("   " + "-" * 21)
 
+def drawFull(ships, hitShips):
+    global laterPrintText
+
+    board = [[" " for _ in range(10)] for _ in range(10)]
+    hitBoard = [[" " for _ in range(10)] for _ in range(10)]
+
+    for ship in ships:
+        ship.draw(board)
+
+    for hitShip in hitShips[:-1]:
+        hitShip.draw(hitBoard)
+
+    if len(hitShips) > 0: hitShips[-1].drawLast(hitBoard)
+
+    print(colors.typeBold, colors.colorGreen, colors.backDefault, "    A B C D E F G H I J        A B C D E F G H I J")
+
+    for idx, (line, hitLine) in enumerate(zip(board, hitBoard)):
+        debug("   " + "-" * 21 + "      " + "-" * 21)
+        debug(f"{colors.escapeSequence + colors.typeBold + colors.colorGreen + colors.backDefault + colors.finish}{idx + 1: <2}{colors.fullReset} |{"|".join(line)}|   {colors.escapeSequence + colors.typeBold + colors.colorGreen + colors.backDefault + colors.finish}{idx + 1: <2}{colors.fullReset} |{"|".join(hitLine)}|")
+
+    debug("   " + "-" * 21 + "      " + "-" * 21)
+
+    debug(laterPrintText)
+    laterPrintText = ""
+
 def validCoord(coord, cType):
     if cType == "single":
-        if re.match(r"[A-J]\d", coord):
-            return True
+        if match := re.match(r"[A-J]\d{1,2}", coord):
+            return match.group()
     elif cType == "double":
-        if re.match(r"[A-J]\d[A-J]\d", coord) and (coord[0] == coord[2] or coord[1] == coord[3]):
-            return max(abs(ord(coord[0]) - ord(coord[2])), abs(int(coord[1]) - int(coord[3]))) + 1
+        if re.match(r"[A-J]\d{1,2}[A-J]\d{1,2}", coord) and (coord[0] == coord[2] or coord[1] == coord[3]):
+            return re.findall(r"[A-J]\d{1,2}", coord), max(abs(ord(coord[0]) - ord(coord[2])), abs(int(coord[1]) - int(coord[3]))) + 1
     elif cType == "remove":
-        if re.match(r"[A-J]\dX", coord):
-            return True
+        if match := re.match(r"[A-J]\d{1,2}X", coord):
+            return match.group
         
     return False
 
@@ -83,7 +125,7 @@ def placeShips():
     while len(remainingShips) > 0:
         if not runtimedata.noCls: os.system("cls")
 
-        data.printStatusBar()
+        gcgData.printStatusBar()
         debug()
 
         drawBoard(ships)
@@ -93,12 +135,14 @@ def placeShips():
         debug(f"To remove a ship, type in any coordinate of the ship followed by 'x' (e.g. {colors.escapeSequence + colors.typeBold + colors.colorGreen + colors.backDefault + colors.finish}A1x{colors.fullReset})")
         coord = input(">>>").upper()
         
-        if distance := validCoord(coord, "double"):
+        if data := validCoord(coord, "double"):
+            coord, distance = data
+
             if distance not in remainingShips: continue
 
-            startCoord, endCoord = coord[0:2], coord[2:4]
-            startCoord = [ord(startCoord[0]) - 65, int(startCoord[1]) - 1]
-            endCoord = [ord(endCoord[0]) - 65, int(endCoord[1]) - 1]
+            startCoord, endCoord = coord[0], coord[1]
+            startCoord = [ord(startCoord[0]) - 65, int(startCoord[1:]) - 1]
+            endCoord = [ord(endCoord[0]) - 65, int(endCoord[1:]) - 1]
 
             invalid = False
             for line in range(max(min(startCoord[1], endCoord[1]) - 1, 0), min(max(startCoord[1], endCoord[1]) + 1, 9) + 1):
@@ -130,7 +174,7 @@ def placeShips():
 
         elif validCoord(coord, "remove"):
             coord = coord[:-1]
-            coord = [ord(coord[0]) - 65, int(coord[1]) - 1]
+            coord = [ord(coord[0]) - 65, int(coord[1:]) - 1]
             for ship in ships:
                 if ship.hit(coord):
                     remainingShips.append(len(ship.positions))

@@ -88,4 +88,10 @@ def connectToMainServer():
         betterPrint(colors.typeNormal, colors.colorRed, colors.backDefault, "Failed to connect to server")
         exit()
 
+    socket.send(f"CONNECT BATTLESHIP {runtimedata.serverPassword}")
+    response = socket.receive(5)
+    if response != "SUCCESS":
+        betterPrint(colors.typeNormal, colors.colorRed, colors.backDefault, "Server denied connection")
+        exit()
+
     return socket
