@@ -53,20 +53,6 @@ def betterPrint(textType, textColor, textBackground, text, end="\n"):
 def printStatusBar():
     betterPrint(colors.typeBold, colors.colorBlack, colors.backWhite, f" {runtimedata.game} / {runtimedata.connectedServer}" + " " * (terminalX - len(f"{runtimedata.game} / {runtimedata.connectedServer}") - 1))
 
-def keyboard_soft_cancel(cancel_text=""):
-    def __make_wrapper(func):
-        def wrapper(*args, **kwargs):
-            try:
-                funcReturn = func(*args, **kwargs)
-
-                return funcReturn
-            except KeyboardInterrupt:
-                print()
-                print(cancel_text)
-
-        return wrapper
-    return __make_wrapper
-
 def connectToMainServer():
     socket = connman.Socket(client=True)
 
