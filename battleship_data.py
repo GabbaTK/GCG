@@ -110,8 +110,8 @@ def validCoord(coord, cType):
         if match := re.match(r"[A-J]\d{1,2}", coord):
             return match.group()
     elif cType == "double":
-        if re.match(r"[A-J]\d{1,2}[A-J]\d{1,2}", coord) and (coord[0] == coord[2] or coord[1] == coord[3]):
-            return re.findall(r"[A-J]\d{1,2}", coord), max(abs(ord(coord[0]) - ord(coord[2])), abs(int(coord[1]) - int(coord[3]))) + 1
+        if re.match(r"[A-J]\d{1,2}[A-J]\d{1,2}", coord) and (re.findall(r"[A-J]\d{1,2}", coord)[0][0] == re.findall(r"[A-J]\d{1,2}", coord)[1][0] or re.findall(r"[A-J]\d{1,2}", coord)[0][1] == re.findall(r"[A-J]\d{1,2}", coord)[1][1]):
+            return re.findall(r"[A-J]\d{1,2}", coord), max(abs(ord(re.findall(r"[A-J]\d{1,2}", coord)[0][0]) - ord(re.findall(r"[A-J]\d{1,2}", coord)[1][0])), abs(int(re.findall(r"[A-J]\d{1,2}", coord)[0][1:]) - int(re.findall(r"[A-J]\d{1,2}", coord)[1][1:]))) + 1
     elif cType == "remove":
         if match := re.match(r"[A-J]\d{1,2}X", coord):
             return match.group

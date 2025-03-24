@@ -76,7 +76,7 @@ def main():
             func = input("C_FUNC_CALL>")
             result = battleship_client.funcCall(getattr(battleship_client, func))
             print(colors.typeNormal, colors.colorWhite, colors.backDefault, f"Return: {result}")
-        elif key == "3": 
+        elif key == "4": 
             func = input("D_FUNC_CALL>")
             result = battleship_data.funcCall(getattr(battleship_data, func))
             print(colors.typeNormal, colors.colorWhite, colors.backDefault, f"Return: {result}")
